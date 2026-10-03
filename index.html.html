@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belo Acervo | Moda & Lingerie</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#FDFBF7',
+                            card: '#FFFFFF',
+                            soft: '#F5EFE6',
+                            accent: '#C59B79',
+                            gold: '#B8860B',
+                            bronze: '#9C6B52',
+                            dark: '#2C221E',
+                            muted: '#7A6E67'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                        sans: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #2C221E;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .font-serif-title {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C59B79;
+            border-radius: 3px;
+        }
+
+        .glass-header {
+            background: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #9C6B52;
+            color: #9C6B52;
+            font-weight: 600;
+        }
+
+        .drawer-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .drawer-content {
+            transition: transform 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-accent selection:text-white">
+
+    <!-- APPLICAÇÃO PRINCIPAL (LOJA) -->
+    <div id="store-app">
+        <!-- Banner Superior -->
+        <div class="bg-brand-bronze text-white text-xs py-2 px-4 text-center font-medium tracking-wider flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-pix text-emerald-300"></i>
+            <span>PAGUE COM <strong>PIX E GANHE <span id="banner-discount-perc">5%</span> DE DESCONTO</strong> | CHAVE CNPJ: <strong id="banner-pix-key">69.321.975/0001-18</strong></span>
+        </div>
+
+        <!-- Cabeçalho / Navbar -->
+        <header class="sticky top-0 z-40 glass-header border-b border-brand-soft/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-24">
+                    
+                    <div class="flex items-center lg:hidden">
+                        <button onclick="toggleMobileMenu()" class="text-brand-dark p-2 hover:text-brand-bronze focus:outline-none">
+                            <i class="fa-solid fa-bars text-xl"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex-1 flex lg:flex-none justify-center lg:justify-start items-center">
+                        <a href="#" class="flex items-center space-x-3 group">
+                            <img src="image_e50ebe.jpg" alt="Belo Acervo Logo" class="h-16 w-16 object-contain rounded-full shadow-sm group-hover:scale-105 transition-transform duration-300 border border-brand-accent/30" onerror="this.src='https://placehold.co/100x100/F5EFE6/9C6B52?text=BA'">
+                            <div class="text-left">
+                                <span class="block font-serif-title text-2xl sm:text-3xl font-semibold tracking-wider text-brand-dark leading-none">Belo Acervo</span>
+                                <span class="block text-[10px] sm:text-xs font-medium tracking-[0.25em] text-brand-bronze uppercase mt-1">Moda • Lingerie</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <nav class="hidden lg:flex space-x-8 items-center text-sm font-medium tracking-wide text-brand-dark">
+                        <a href="#inicio" class="hover:text-brand-bronze transition-colors">Início</a>
+                        <a href="#moda" onclick="filterCategory('moda')" class="hover:text-brand-bronze transition-colors">Moda Feminina</a>
+                        <a href="#lingerie" onclick="filterCategory('lingerie')" class="hover:text-brand-bronze transition-colors">Lingerie de Luxo</a>
+                        <a href="#promocoes" onclick="filterCategory('promocao')" class="text-brand-bronze font-semibold hover:opacity-80 transition-opacity">Promoções</a>
+                        <a href="#sobre" class="hover:text-brand-bronze transition-colors">Sobre Nós</a>
+                    </nav>
+
+                    <div class="flex items-center space-x-4 sm:space-x-6">
+                        <button onclick="toggleSearchModal()" class="text-brand-dark hover:text-brand-bronze transition-colors p-1" title="Buscar">
+                            <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                        </button>
+
+                        <button onclick="openCart()" class="text-brand-dark hover:text-brand-bronze transition-colors p-1 relative flex items-center" title="Carrinho">
+                            <i class="fa-solid fa-bag-shopping text-xl"></i>
+                            <span id="cart-badge" class="absolute -top-1 -right-2 bg-brand-gold text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden lg:hidden border-t border-brand-soft bg-brand-bg px-4 pt-3 pb-6 space-y-3">
+                <a href="#inicio" onclick="toggleMobileMenu()" class="block py-2 text-brand-dark hover:text-brand-bronze font-medium">Início</a>
+                <a href="#moda" onclick="filterCategory('moda'); toggleMobileMenu()" class="block py-2 text-brand-dark hover:text-brand-bronze font-medium">Moda Feminina</a>
+                <a href="#lingerie" onclick="filterCategory('lingerie'); toggleMobileMenu()" class="block py-2 text-brand-dark hover:text-brand-bronze font-medium">Lingerie de Luxo</a>
+                <a href="#promocoes" onclick="filterCategory('promocao'); toggleMobileMenu()" class="block py-2 text-brand-bronze font-semibold">Promoções Especial</a>
+                <a href="#sobre" onclick="toggleMobileMenu()" class="block py-2 text-brand-dark hover:text-brand-bronze font-medium">Sobre Nós</a>
+                <button onclick="showAdminLogin()" class="block w-full text-left py-2 text-xs font-bold text-stone-500 uppercase">Acesso Painel Admin</button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="inicio" class="relative bg-brand-soft/40 overflow-hidden py-16 lg:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <div class="lg:col-span-6 text-center lg:text-left space-y-6">
+                        <div class="inline-flex items-center space-x-2 bg-brand-soft px-3 py-1.5 rounded-full border border-brand-accent/20">
+                            <i class="fa-solid fa-sparkles text-xs text-brand-bronze"></i>
+                            <span class="text-xs font-semibold tracking-widest text-brand-bronze uppercase">Pagamento Direto & Rápido via PIX</span>
+                        </div>
+
+                        <h1 class="font-serif-title text-4xl sm:text-5xl lg:text-6xl font-light tracking-wide text-brand-dark leading-tight">
+                            Sinta-se Única,<br><span class="italic font-normal text-brand-bronze">Viva Elegante</span>
+                        </h1>
+
+                        <p class="text-brand-muted text-base sm:text-lg max-w-xl mx-auto lg:mx-0 font-light leading-relaxed">
+                            Curadoria exclusiva de moda e lingerie com tecidos nobres. Pague no PIX de forma segura e garanta envio prioritário com desconto especial.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-4">
+                            <a href="#produtos" class="px-8 py-3.5 bg-brand-dark text-white text-sm tracking-widest uppercase font-medium rounded-full shadow-lg hover:bg-brand-bronze transition-all duration-300 text-center">
+                                Ver Coleção
+                            </a>
+                            <a href="#lingerie" onclick="filterCategory('lingerie')" class="px-8 py-3.5 border border-brand-bronze text-brand-bronze text-sm tracking-widest uppercase font-medium rounded-full hover:bg-brand-bronze hover:text-white transition-all duration-300 text-center">
+                                Lingeries Exclusivas
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-6 relative">
+                        <div class="relative mx-auto w-full max-w-md lg:max-w-none">
+                            <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Moda Elegante Belo Acervo" class="w-full h-[480px] object-cover hover:scale-105 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Vitrine de Produtos -->
+        <section id="produtos" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 pb-4 border-b border-brand-soft">
+                <div>
+                    <span class="text-xs uppercase font-semibold tracking-widest text-brand-bronze">Exclusividade & Estilo</span>
+                    <h2 class="font-serif-title text-3xl sm:text-4xl text-brand-dark font-light mt-1">Nosso Acervo</h2>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex flex-wrap gap-2 mt-4 md:mt-0 text-sm">
+                    <button onclick="filterCategory('todos')" id="tab-todos" class="tab-btn px-4 py-2 rounded-full border border-brand-soft hover:bg-brand-soft font-medium text-brand-dark transition-all tab-active">Todos</button>
+                    <button onclick="filterCategory('moda')" id="tab-moda" class="tab-btn px-4 py-2 rounded-full border border-brand-soft hover:bg-brand-soft font-medium text-brand-dark transition-all">Moda Feminina</button>
+                    <button onclick="filterCategory('lingerie')" id="tab-lingerie" class="tab-btn px-4 py-2 rounded-full border border-brand-soft hover:bg-brand-soft font-medium text-brand-dark transition-all">Lingerie</button>
+                    <button onclick="filterCategory('loungewear')" id="tab-loungewear" class="tab-btn px-4 py-2 rounded-full border border-brand-soft hover:bg-brand-soft font-medium text-brand-dark transition-all">Loungewear</button>
+                    <button onclick="filterCategory('promocao')" id="tab-promocao" class="tab-btn px-4 py-2 rounded-full border border-brand-soft hover:bg-brand-soft font-medium text-brand-dark transition-all text-brand-bronze font-semibold">Ofertas</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Grid -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"></div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="bg-brand-dark text-white pt-16 pb-8 border-t border-brand-bronze/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12 text-sm font-light">
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <img src="image_e50ebe.jpg" alt="Belo Acervo" class="w-12 h-12 rounded-full object-contain bg-white p-1" onerror="this.src='https://placehold.co/100x100/F5EFE6/9C6B52?text=BA'">
+                            <div>
+                                <span class="font-serif-title text-2xl font-bold tracking-wider block leading-tight">Belo Acervo</span>
+                                <span class="text-[9px] uppercase tracking-widest text-brand-accent block">Moda • Lingerie</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="font-serif-title text-lg font-bold text-brand-soft mb-4 border-b border-stone-800 pb-2">Links</h5>
+                        <ul class="space-y-2.5 text-xs text-stone-300">
+                            <li><a href="#inicio" class="hover:text-brand-accent">Início</a></li>
+                            <li><a href="#moda" onclick="filterCategory('moda')" class="hover:text-brand-accent">Moda Feminina</a></li>
+                            <li><a href="#lingerie" onclick="filterCategory('lingerie')" class="hover:text-brand-accent">Lingerie de Luxo</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h5 class="font-serif-title text-lg font-bold text-brand-soft mb-4 border-b border-stone-800 pb-2">Empresa</h5>
+                        <ul class="space-y-2 text-xs text-stone-300">
+                            <li><strong>Razão Social:</strong> Belo Acervo Moda & Lingerie</li>
+                            <li><strong>CNPJ:</strong> <span class="display-cnpj">69.321.975/0001-18</span></li>
+                            <li><strong>Chave PIX:</strong> <span class="display-pix">69321975000118</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h5 class="font-serif-title text-lg font-bold text-brand-soft border-b border-stone-800 pb-2">Área Restrita</h5>
+                        <button onclick="showAdminLogin()" class="px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs rounded-lg transition-colors flex items-center space-x-2">
+                            <i class="fa-solid fa-lock text-brand-accent"></i>
+                            <span>Painel Admin (Administrador)</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="pt-8 border-t border-stone-800 text-center text-xs text-stone-400">
+                    <p>© 2026 Belo Acervo. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO (INVISÍVEL POR PADRÃO) -->
+    <div id="admin-app" class="hidden min-h-screen bg-stone-100 text-stone-800">
+        <!-- Admin Header -->
+        <header class="bg-stone-900 text-white py-4 px-6 shadow-md flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="bg-brand-accent text-stone-900 text-xs font-bold px-2.5 py-1 rounded">ADMIN</span>
+                <h1 class="font-bold text-lg">Painel de Controle - Belo Acervo</h1>
+            </div>
+            <button onclick="logoutAdmin()" class="text-xs bg-stone-800 hover:bg-red-600 text-stone-300 hover:text-white px-3 py-1.5 rounded transition-colors">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> Sair do Painel
+            </button>
+        </header>
+
+        <div class="max-w-7xl mx-auto p-6 space-y-8">
+            
+            <!-- Cards de Estatísticas/Configuração rápida -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 space-y-2">
+                    <span class="text-xs font-bold text-stone-400 uppercase">Configuração PIX</span>
+                    <div class="space-y-2">
+                        <label class="text-xs text-stone-600 block">Chave PIX Atual:</label>
+                        <input type="text" id="admin-pix-input" value="69321975000118" class="w-full text-xs p-2 border rounded font-mono font-bold">
+                        <button onclick="savePixConfig()" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded transition-colors">Salvar Nova Chave PIX</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 space-y-2">
+                    <span class="text-xs font-bold text-stone-400 uppercase">Desconto PIX (%)</span>
+                    <div class="space-y-2">
+                        <label class="text-xs text-stone-600 block">Porcentagem de Desconto:</label>
+                        <input type="number" id="admin-discount-input" value="5" class="w-full text-xs p-2 border rounded font-bold">
+                        <button onclick="saveDiscountConfig()" class="w-full text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded transition-colors">Salvar Porcentagem</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-stone-400 uppercase">Resumo do Catálogo</span>
+                        <h3 class="text-2xl font-bold text-stone-800 mt-2" id="admin-total-products">0 Produtos</h3>
+                        <p class="text-xs text-stone-500" id="admin-out-stock-count">0 produtos esgotados</p>
+                    </div>
+                    <button onclick="openNewProductModal()" class="w-full text-xs bg-brand-dark hover:bg-brand-bronze text-white font-bold py-2.5 rounded transition-colors flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Cadastrar Novo Produto</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabela de Gerenciamento de Produtos -->
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="p-4 border-b border-stone-200 flex justify-between items-center bg-stone-50">
+                    <h3 class="font-bold text-sm text-stone-700 uppercase">Gerenciar Produtos da Loja</h3>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-stone-600">
+                        <thead class="bg-stone-100 text-stone-500 uppercase font-bold border-b border-stone-200">
+                            <tr>
+                                <th class="p-3">Produto</th>
+                                <th class="p-3">Categoria</th>
+                                <th class="p-3">Preço (R$)</th>
+                                <th class="p-3">Status Estoque</th>
+                                <th class="p-3 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-table">
+                            <!-- Injetado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL DE LOGIN ADMIN -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div class="text-center space-y-1">
+                <i class="fa-solid fa-user-shield text-3xl text-brand-bronze"></i>
+                <h3 class="font-bold text-lg text-brand-dark">Painel do Administrador</h3>
+                <p class="text-xs text-stone-500">Digite sua senha para acessar as configurações e estoque.</p>
+            </div>
+            
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-stone-600 block mb-1">Senha de Acesso:</label>
+                    <input type="password" id="admin-pass" placeholder="Sua senha..." required class="w-full text-xs p-3 border border-stone-300 rounded-lg focus:outline-none focus:border-brand-accent">
+                </div>
+                <button type="submit" class="w-full py-3 bg-brand-dark hover:bg-brand-bronze text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors">
+                    Entrar no Painel
+                </button>
+            </form>
+            <button onclick="closeAdminLogin()" class="w-full text-center text-xs text-stone-400 hover:underline">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL NOVO/EDITAR PRODUTO -->
+    <div id="product-form-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-base text-stone-800" id="modal-product-title">Cadastrar Produto</h3>
+            
+            <form onsubmit="saveProductForm(event)" class="space-y-3">
+                <input type="hidden" id="prod-form-id">
+                
+                <div>
+                    <label class="text-xs font-bold text-stone-600 block mb-1">Nome do Produto:</label>
+                    <input type="text" id="prod-form-name" required placeholder="Ex: Vestido Seda Elegance" class="w-full text-xs p-2.5 border rounded">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-stone-600 block mb-1">Preço (R$):</label>
+                        <input type="number" step="0.01" id="prod-form-price" required placeholder="149.90" class="w-full text-xs p-2.5 border rounded">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-stone-600 block mb-1">Categoria:</label>
+                        <select id="prod-form-category" class="w-full text-xs p-2.5 border rounded">
+                            <option value="lingerie">Lingerie</option>
+                            <option value="moda">Moda Feminina</option>
+                            <option value="loungewear">Loungewear</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-stone-600 block mb-1">Link da Foto (URL):</label>
+                    <input type="url" id="prod-form-image" required placeholder="https://..." class="w-full text-xs p-2.5 border rounded">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-stone-600 block mb-1">Descrição:</label>
+                    <textarea id="prod-form-desc" rows="3" class="w-full text-xs p-2.5 border rounded" placeholder="Detalhes do produto..."></textarea>
+                </div>
+
+                <div class="flex items-center space-x-2 pt-2">
+                    <input type="checkbox" id="prod-form-instock" checked class="w-4 h-4 text-emerald-600">
+                    <label for="prod-form-instock" class="text-xs font-bold text-stone-700">Produto em Estoque (Disponível)</label>
+                </div>
+
+                <div class="flex gap-2 pt-4">
+                    <button type="submit" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded">Salvar Produto</button>
+                    <button type="button" onclick="closeProductFormModal()" class="px-4 py-2.5 bg-stone-200 hover:bg-stone-300 text-stone-700 text-xs font-bold rounded">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Carrinho / Drawer -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none">
+        <div id="cart-backdrop" onclick="closeCart()" class="absolute inset-0 bg-black/50 opacity-0 drawer-overlay pointer-events-none transition-opacity"></div>
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cart-content" class="w-screen max-w-md bg-brand-bg shadow-2xl drawer-content translate-x-full pointer-events-auto flex flex-col justify-between">
+                
+                <div class="p-6 border-b border-brand-soft flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-bag-shopping text-brand-bronze text-xl"></i>
+                        <h3 class="font-serif-title text-2xl font-bold text-brand-dark">Seu Carrinho</h3>
+                    </div>
+                    <button onclick="closeCart()" class="text-stone-400 hover:text-brand-dark p-2">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
+
+                <div id="cart-footer" class="p-6 border-t border-brand-soft bg-white space-y-4">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between text-brand-muted">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-emerald-600 font-semibold">
+                            <span>Desconto PIX (<span id="cart-discount-perc-display">5</span>%)</span>
+                            <span id="cart-discount">- R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-brand-dark pt-2 border-t border-brand-soft">
+                            <span>Total no PIX</span>
+                            <span id="cart-total" class="text-brand-bronze">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckoutModal()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-full shadow-lg transition-colors flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Finalizar Compra no PIX</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Checkout PIX -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-brand-soft rounded-full flex items-center justify-center text-brand-dark">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="space-y-5">
+                <div class="text-center">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-bronze">Pagamento Seguro</span>
+                    <h3 class="font-serif-title text-2xl font-bold text-brand-dark">Chave PIX da Loja</h3>
+                </div>
+
+                <div class="bg-emerald-50 border-2 border-emerald-500/30 rounded-2xl p-5 space-y-4 text-center">
+                    <div class="bg-white p-3 rounded-xl border border-emerald-200 shadow-inner space-y-1">
+                        <span class="text-[11px] text-stone-500 uppercase font-semibold block">Chave PIX Oficial</span>
+                        <div class="flex items-center justify-between bg-stone-50 p-2 rounded border border-stone-200">
+                            <span id="checkout-pix-key" class="font-mono text-sm font-bold text-brand-dark">69321975000118</span>
+                            <button onclick="copyPixKey()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded">
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <form onsubmit="confirmOrder(event)" class="space-y-3">
+                    <input type="text" id="cust-name" required placeholder="Seu Nome Completo" class="w-full text-xs p-3 border rounded-xl">
+                    <input type="tel" id="cust-phone" required placeholder="Seu WhatsApp" class="w-full text-xs p-3 border rounded-xl">
+                    <input type="text" id="cust-address" required placeholder="Endereço de Entrega Completo" class="w-full text-xs p-3 border rounded-xl">
+                    
+                    <button type="submit" class="w-full py-3.5 bg-brand-dark hover:bg-brand-bronze text-white font-bold text-xs uppercase tracking-widest rounded-full shadow-lg">
+                        Enviar Pedido no WhatsApp
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE FUNCIONAMENTO -->
+    <script>
+        // ESTADO GLOBAL DO BANCO DE DADOS LOCAL
+        const defaultProducts = [
+            {
+                id: 1,
+                name: "Conjunto Renda Elegance Gold",
+                category: "lingerie",
+                price: 159.90,
+                image: "https://images.unsplash.com/photo-1583846783214-7229a91b20ed?auto=format&fit=crop&w=600&q=80",
+                description: "Sutiã estruturado com aro e calcinha em renda nobre.",
+                inStock: true
+            },
+            {
+                id: 2,
+                name: "Vestido Midi Acervo Charm",
+                category: "moda",
+                price: 249.90,
+                image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=600&q=80",
+                description: "Vestido midi em tecido fluido com caimento elegante.",
+                inStock: true
+            },
+            {
+                id: 3,
+                name: "Body Renda Sofisticação Nude",
+                category: "lingerie",
+                price: 189.90,
+                image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80",
+                description: "Body corselet em renda floral com transparência.",
+                inStock: false
+            }
+        ];
+
+        let storeData = {
+            pixKey: localStorage.getItem('ba_pix') || '69321975000118',
+            discountPerc: parseFloat(localStorage.getItem('ba_discount')) || 5,
+            products: JSON.parse(localStorage.getItem('ba_products')) || defaultProducts
+        };
+
+        let cart = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            syncStoreDataUI();
+            renderProducts(storeData.products);
+        });
+
+        function saveToStorage() {
+            localStorage.setItem('ba_pix', storeData.pixKey);
+            localStorage.setItem('ba_discount', storeData.discountPerc);
+            localStorage.setItem('ba_products', JSON.stringify(storeData.products));
+            syncStoreDataUI();
+            renderProducts(storeData.products);
+            renderAdminTable();
+        }
+
+        function syncStoreDataUI() {
+            document.getElementById('banner-pix-key').innerText = storeData.pixKey;
+            document.getElementById('banner-discount-perc').innerText = `${storeData.discountPerc}%`;
+            document.getElementById('checkout-pix-key').innerText = storeData.pixKey;
+            document.getElementById('cart-discount-perc-display').innerText = storeData.discountPerc;
+            
+            document.querySelectorAll('.display-pix').forEach(el => el.innerText = storeData.pixKey);
+        }
+
+        function renderProducts(items) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            items.forEach(product => {
+                const card = document.createElement('div');
+                card.className = "group bg-white rounded-2xl overflow-hidden border border-brand-soft/80 shadow-sm hover:shadow-md transition-all flex flex-col justify-between";
+                
+                const pixPrice = product.price * (1 - (storeData.discountPerc / 100));
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-[3/4] bg-brand-soft">
+                        ${!product.inStock ? `<span class="absolute top-3 left-3 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Esgotado</span>` : ''}
+                        <img src="${product.image}" class="w-full h-full object-cover ${product.inStock ? 'group-hover:scale-105' : 'grayscale opacity-75'} transition-transform duration-500">
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold tracking-widest text-brand-bronze">${product.category}</span>
+                            <h3 class="font-serif-title text-lg font-bold text-brand-dark line-clamp-1 mt-0.5">${product.name}</h3>
+                            
+                            <div class="flex items-center space-x-2 mt-2">
+                                <span class="text-base font-bold text-brand-bronze">R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            <span class="text-[10px] text-emerald-600 font-bold block mt-1"><i class="fa-solid fa-pix"></i> R$ ${pixPrice.toFixed(2).replace('.', ',')} no PIX</span>
+                        </div>
+
+                        <div class="pt-2 border-t border-brand-soft/60">
+                            ${product.inStock ? `
+                                <button onclick="addToCart(${product.id})" class="w-full py-2.5 bg-brand-soft hover:bg-brand-dark hover:text-white text-brand-dark text-xs font-semibold uppercase tracking-wider rounded-full transition-colors">
+                                    Adicionar ao Carrinho
+                                </button>
+                            ` : `
+                                <button disabled class="w-full py-2.5 bg-stone-200 text-stone-500 text-xs font-semibold uppercase tracking-wider rounded-full cursor-not-allowed">
+                                    Indisponível
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- NAVEGAÇÃO E LOGIN ADMIN ---
+        function showAdminLogin() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === 'admin123') {
+                closeAdminLogin();
+                document.getElementById('store-app').classList.add('hidden');
+                document.getElementById('admin-app').classList.remove('hidden');
+                renderAdminTable();
+            } else {
+                alert('Senha incorreta! (A senha padrão é: admin123)');
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-app').classList.add('hidden');
+            document.getElementById('store-app').classList.remove('hidden');
+        }
+
+        // --- PAINEL DO ADMINISTRADOR ---
+        function renderAdminTable() {
+            const table = document.getElementById('admin-products-table');
+            table.innerHTML = '';
+
+            document.getElementById('admin-total-products').innerText = `${storeData.products.length} Produtos`;
+            const outStock = storeData.products.filter(p => !p.inStock).length;
+            document.getElementById('admin-out-stock-count').innerText = `${outStock} esgotados`;
+
+            document.getElementById('admin-pix-input').value = storeData.pixKey;
+            document.getElementById('admin-discount-input').value = storeData.discountPerc;
+
+            storeData.products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-stone-200 hover:bg-stone-50";
+                tr.innerHTML = `
+                    <td class="p-3 flex items-center space-x-3">
+                        <img src="${p.image}" class="w-8 h-8 rounded object-cover">
+                        <span class="font-bold text-stone-800">${p.name}</span>
+                    </td>
+                    <td class="p-3 uppercase font-bold text-[10px] text-stone-500">${p.category}</td>
+                    <td class="p-3 font-bold">R$ ${p.price.toFixed(2)}</td>
+                    <td class="p-3">
+                        <button onclick="toggleStock(${p.id})" class="px-2.5 py-1 rounded-full text-[10px] font-bold ${p.inStock ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                            ${p.inStock ? 'Disponível' : 'Esgotado'}
+                        </button>
+                    </td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="openEditProductModal(${p.id})" class="text-blue-600 hover:underline">Editar</button>
+                        <button onclick="deleteProduct(${p.id})" class="text-red-600 hover:underline">Excluir</button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function toggleStock(id) {
+            const prod = storeData.products.find(p => p.id === id);
+            if(prod) {
+                prod.inStock = !prod.inStock;
+                saveToStorage();
+            }
+        }
+
+        function savePixConfig() {
+            const val = document.getElementById('admin-pix-input').value;
+            if(val) {
+                storeData.pixKey = val;
+                saveToStorage();
+                alert('Chave PIX atualizada!');
+            }
+        }
+
+        function saveDiscountConfig() {
+            const val = parseFloat(document.getElementById('admin-discount-input').value);
+            if(!isNaN(val)) {
+                storeData.discountPerc = val;
+                saveToStorage();
+                alert('Porcentagem de desconto atualizada!');
+            }
+        }
+
+        function openNewProductModal() {
+            document.getElementById('modal-product-title').innerText = "Cadastrar Novo Produto";
+            document.getElementById('prod-form-id').value = '';
+            document.getElementById('prod-form-name').value = '';
+            document.getElementById('prod-form-price').value = '';
+            document.getElementById('prod-form-image').value = '';
+            document.getElementById('prod-form-desc').value = '';
+            document.getElementById('prod-form-instock').checked = true;
+
+            document.getElementById('product-form-modal').classList.remove('hidden');
+            document.getElementById('product-form-modal').classList.add('flex');
+        }
+
+        function openEditProductModal(id) {
+            const p = storeData.products.find(item => item.id === id);
+            if(!p) return;
+
+            document.getElementById('modal-product-title').innerText = "Editar Produto";
+            document.getElementById('prod-form-id').value = p.id;
+            document.getElementById('prod-form-name').value = p.name;
+            document.getElementById('prod-form-price').value = p.price;
+            document.getElementById('prod-form-category').value = p.category;
+            document.getElementById('prod-form-image').value = p.image;
+            document.getElementById('prod-form-desc').value = p.description || '';
+            document.getElementById('prod-form-instock').checked = p.inStock;
+
+            document.getElementById('product-form-modal').classList.remove('hidden');
+            document.getElementById('product-form-modal').classList.add('flex');
+        }
+
+        function closeProductFormModal() {
+            document.getElementById('product-form-modal').classList.add('hidden');
+            document.getElementById('product-form-modal').classList.remove('flex');
+        }
+
+        function saveProductForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-form-id').value;
+            const name = document.getElementById('prod-form-name').value;
+            const price = parseFloat(document.getElementById('prod-form-price').value);
+            const category = document.getElementById('prod-form-category').value;
+            const image = document.getElementById('prod-form-image').value;
+            const description = document.getElementById('prod-form-desc').value;
+            const inStock = document.getElementById('prod-form-instock').checked;
+
+            if(id) {
+                // Editar
+                const idx = storeData.products.findIndex(p => p.id == id);
+                if(idx > -1) {
+                    storeData.products[idx] = { id: parseInt(id), name, price, category, image, description, inStock };
+                }
+            } else {
+                // Criar
+                const newId = Date.now();
+                storeData.products.push({ id: newId, name, price, category, image, description, inStock });
+            }
+
+            saveToStorage();
+            closeProductFormModal();
+        }
+
+        function deleteProduct(id) {
+            if(confirm('Tem certeza que deseja excluir este produto?')) {
+                storeData.products = storeData.products.filter(p => p.id !== id);
+                saveToStorage();
+            }
+        }
+
+        // --- CARRINHO DA LOJA ---
+        function addToCart(productId) {
+            const product = storeData.products.find(p => p.id === productId);
+            if(!product || !product.inStock) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if(existing) existing.quantity += 1;
+            else cart.push({ ...product, quantity: 1 });
+
+            updateCartUI();
+            openCart();
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-badge').innerText = cart.reduce((s, i) => s + i.quantity, 0);
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-sm text-brand-muted py-8">Seu carrinho está vazio.</p>`;
+            } else {
+                cart.forEach((item, idx) => {
+                    const el = document.createElement('div');
+                    el.className = "flex gap-3 p-3 bg-white rounded-xl border items-center justify-between";
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <img src="${item.image}" class="w-12 h-12 object-cover rounded">
+                            <div>
+                                <h4 class="text-xs font-bold text-brand-dark">${item.name}</h4>
+                                <span class="text-xs text-brand-bronze font-semibold">R$ ${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${idx})" class="text-red-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+            const discount = subtotal * (storeData.discountPerc / 100);
+            const total = subtotal - discount;
+
+            document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+            document.getElementById('cart-discount').innerText = `- R$ ${discount.toFixed(2)}`;
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(idx) {
+            cart.splice(idx, 1);
+            updateCartUI();
+        }
+
+        function openCart() {
+            document.getElementById('cart-drawer').classList.remove('pointer-events-none');
+            document.getElementById('cart-backdrop').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('cart-content').classList.remove('translate-x-full');
+        }
+
+        function closeCart() {
+            document.getElementById('cart-backdrop').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('cart-content').classList.add('translate-x-full');
+            setTimeout(() => { document.getElementById('cart-drawer').classList.add('pointer-events-none'); }, 300);
+        }
+
+        function openCheckoutModal() {
+            if(cart.length === 0) return alert('Seu carrinho está vazio.');
+            closeCart();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            document.getElementById('checkout-modal').classList.add('flex');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+            document.getElementById('checkout-modal').classList.remove('flex');
+        }
+
+        function copyPixKey() {
+            navigator.clipboard.writeText(storeData.pixKey);
+            alert(`Chave PIX (${storeData.pixKey}) copiada!`);
+        }
+
+        function confirmOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const address = document.getElementById('cust-address').value;
+
+            let msg = `*NOVO PEDIDO - BELO ACERVO*\n\n`;
+            msg += `*Cliente:* ${name}\n*Telefone:* ${phone}\n*Endereço:* ${address}\n\n`;
+            msg += `*ITENS:* \n`;
+            cart.forEach(item => {
+                msg += `• ${item.name} x${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+
+            const subtotal = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
+            const total = subtotal * (1 - (storeData.discountPerc / 100));
+
+            msg += `\n*Pagamento:* PIX com ${storeData.discountPerc}% OFF`;
+            msg += `\n*Total a Pagar:* R$ ${total.toFixed(2)}`;
+            msg += `\n\n_Realizei o pagamento na chave PIX ${storeData.pixKey} e estou enviando o comprovante!_`;
+
+            window.open(`https://wa.me/5581999999999?text=${encodeURIComponent(msg)}`, '_blank');
+            closeCheckoutModal();
+        }
+
+        function filterCategory(cat) {
+            if(cat === 'todos') renderProducts(storeData.products);
+            else renderProducts(storeData.products.filter(p => p.category === cat));
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
